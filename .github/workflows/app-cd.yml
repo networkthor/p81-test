@@ -43,7 +43,7 @@ jobs:
     - name: Update kubeconfig
       id: update-kubeconfig
       run: |
-        aws eks update-kubeconfig --name nt-project-dev-cluster --region eu-west-3
+        aws eks update-kubeconfig --name nt-project-dev-cluster --region eu-central-1
 
     - name: Install helm
       id: install-helm
