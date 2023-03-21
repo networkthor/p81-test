@@ -5,4 +5,4 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   index.html: |
-    <html><body bgcolor=Aquamarine><center><h2><font color=yellow>Hello from NetworkThor Inc.</font></h2><font color=magenta>webserver.networkthor.info</font></center></body></html>
+    <html><body bgcolor=Salmon><center><h2><font color=yellow>Hello from NetworkThor Inc.</font></h2><font color=magenta>webserver.networkthor.info</font></center></body></html>
