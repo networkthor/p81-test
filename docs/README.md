@@ -6,6 +6,7 @@ This project is used to deploy Python webserver application on AWS EKS cluster. 
 - app-code                  -  Application source code and Dockerfile
 - terraform                 -  manifests to deploy AWS env
 - helm-charts               -  helm templates which used to generate custom application resources
+- .github                   -  CICD files
 
 
 #### AWS insfrastructure topology:
