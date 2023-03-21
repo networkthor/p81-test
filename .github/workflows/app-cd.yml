@@ -1,0 +1,63 @@
+---
+name: Deploy Webserver app to EKS
+on:
+  pull_request:
+    branches:
+    - 'main'
+    
+jobs:
+  build-and-push:
+    name: Build and Push to ECR
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-central-1
+
+    - name: Login to ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Retrive tagging
+      id: retrive-git-tag
+      run: |
+        echo "GIT_TAG=$(echo $(git fetch --prune --unshallow && git describe --tags --abbrev=0))" >> $GITHUB_ENV
+
+    - name: Build and Push image to registry
+      id: build-push
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: nt-project-dev/webserver
+        IMAGE_TAG: ${{ env.GIT_TAG }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f ./app-code/Dockerfile .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+    
+    - name: Update kubeconfig
+      id: update-kubeconfig
+      run: |
+        aws eks update-kubeconfig --name nt-project-dev-cluster --region eu-west-3
+
+    - name: Install helm
+      id: install-helm
+      run: |
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+    
+    - name: Deploy to EKS
+      id: deploy-to-eks
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: nt-project-dev/webserver
+        IMAGE_TAG: ${{ env.GIT_TAG }}
+      run: |
+        helm upgrade --install webserver ./helm-charts/webserver/ --namespace webserver --create-namespace --set container.image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+

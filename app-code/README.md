@@ -58,8 +58,8 @@ docker run -d --name webserver -p 8080:8080 -v /var/www/html:/usr/src/app/html w
 ### Check application:
 
 ```
-curl http://localhost/
-curl http://localhost/index.html
+curl http://localhost:8080/
+curl http://localhost:8080/index.html
 
 ```
 

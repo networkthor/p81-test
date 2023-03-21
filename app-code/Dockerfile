@@ -7,6 +7,6 @@ WORKDIR /usr/src/app
 COPY ./app-code/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY ./app-code .
 
 ENTRYPOINT [ "python", "./main.py", "-d", "./html/index.html" ]
