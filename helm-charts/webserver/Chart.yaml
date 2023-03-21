@@ -1,0 +1,8 @@
+apiVersion: v2
+name: webserver
+description: My Python Webserver
+version: 4.4.2
+appVersion: v3
+
+maintainers:
+  - name: Nurkhat Gabdollayev

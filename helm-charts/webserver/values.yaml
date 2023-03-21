@@ -1,0 +1,44 @@
+# Default Values for my helm chart
+
+# Deployment default values
+container:
+  image: 369131898292.dkr.ecr.eu-central-1.amazonaws.com/nt-project-dev/webserver:v11
+  containerPort: 8080
+  volumeMounts:
+    mountPath: /usr/src/app/html/
+  env:
+    name: ENV_STAGE
+    value: "production"
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 5
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 5
+
+replicaCount: 1
+
+# Service default values
+service:
+  protocol: TCP
+  port: 8080
+  targetPort: 8080
+
+# Ingress default values
+ingress:
+  ingressClassName: nginx
+  host: webserver.networkthor.info
+  http:
+      path: /
+      pathType: Prefix
+
+# ConfigMap default values
+htmlconfigmap:
+  name: index-html-configmap
+

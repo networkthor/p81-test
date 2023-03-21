@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: {{ .Values.container.image }}
+        ports:
+        - containerPort: {{ .Values.container.containerPort }}
+        volumeMounts:
+        - name: index-html-file
+          mountPath: {{ .Values.container.volumeMounts.mountPath }}
+        env:
+        - name: {{ .Values.container.env.name }}
+          value: {{ .Values.container.env.value }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.container.livenessProbe.httpGet.path }}
+            port: {{ .Values.container.livenessProbe.httpGet.port }}
+          initialDelaySeconds: {{ .Values.container.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.container.livenessProbe.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.container.readinessProbe.httpGet.path }}
+            port: {{ .Values.container.readinessProbe.httpGet.port }}
+          initialDelaySeconds: {{ .Values.container.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.container.readinessProbe.periodSeconds }}
+      volumes:
+      - name: index-html-file
+        configMap:
+          name: {{ .Values.htmlconfigmap.name }}
+        
