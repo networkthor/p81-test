@@ -132,7 +132,7 @@ class NetworkThorHTTP(BaseHTTPRequestHandler):
                 else:
                     self.wfile.write(bytes("<html><body>", "utf-8"))
                     self.wfile.write(bytes('<h4> Your environment is ' + env_stage + '</h4>', "utf-8"))
-                    self.wfile.write(bytes('<br>Your IP address: ' + str(address) + '</br>', "utf-8"))
+                    self.wfile.write(bytes('<br>Your IP addresss: ' + str(address) + '</br>', "utf-8"))
                     self.wfile.write(bytes('<br>City: ' + str(city) + '</br>', "utf-8"))
                     self.wfile.write(bytes('<br>Country: ' + str(country) + '</br>', "utf-8"))
                     self.wfile.write(bytes('<br>Country code: ' + str(country_code) + '</br>', "utf-8"))
